@@ -13,6 +13,8 @@ g++ main.cpp -lglut -lGL -lGLEW -lGLU
 
 ## Screenshots
 
+![alt text](https://github.com/uddua/computer-graphics/blob/master/polygon/terminal.png)
+
 ### polygon with 6 edges
 
 ![alt text](https://github.com/uddua/computer-graphics/blob/master/polygon/polygon_6_edges.png)
