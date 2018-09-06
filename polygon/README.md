@@ -9,7 +9,9 @@ User enters the number of edges and a radius.
 
 ## Running
 
+```bash
 g++ main.cpp -lglut -lGL -lGLEW -lGLU
+```
 
 ## Screenshots
 
