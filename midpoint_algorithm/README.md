@@ -18,7 +18,7 @@ g++ main.cpp -lglut -lGL -lGLEW -lGLU
 
 ![alt text](https://github.com/uddua/computer-graphics/blob/master/midpoint_algorithm/terminal.png)
 
-![alt text](https://github.com/uddua/computer-graphics/blob/master/midpoint_algorithm/50_75_250_375.png.png)
+![alt text](https://github.com/uddua/computer-graphics/blob/master/midpoint_algorithm/50_75_250_375.png)
 
 ![alt text](https://github.com/uddua/computer-graphics/blob/master/midpoint_algorithm/200_200_400_400.png)
 
