@@ -29,17 +29,23 @@ g++ main.cpp -lglut -lGL -lGLEW -lGLU
 
 ## 2.4.3
 
+### primitivas moveto(dcx,dcy) y drawto(dcx,dcy)
+
 ```c
 pen_up() {
-
+	moveto(dcx,dcy)
+	drawto(dcx,dcy)
+	moveto(dcx,dcy)
+	drawto(dcx,dcy)
 }
 
 pen_down() {
-
+	drawto(dcx,dcy)
+	drawto(dcx,dcy)
 }
 
 locate(dcx, dcy) {
-
+	moveto(dcx, dcy);
 }
 ```
 
