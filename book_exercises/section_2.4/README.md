@@ -16,6 +16,15 @@ g++ main.cpp -lglut -lGL -lGLEW -lGLU
 
 ## 2.4.2
 
+### Running
+
+```bash
+g++ main.cpp -lglut -lGL -lGLEW -lGLU
+```
+
+### Relacion entre radio y lados
+
+![alt text](https://github.com/uddua/computer-graphics/blob/master/book_exercises/section_2.4/gif/myimage.gif)
 
 
 ## 2.4.3

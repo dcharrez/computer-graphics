@@ -39,13 +39,13 @@ void myDisplay(void) {
 
 int main(int argc, char** argv) {
 	cout << "Enter radius : "; cin >> radius;
-	cout << "Enter the number of sides : "; cin >> n_sides;
+	cout << "Enter the number of edges : "; cin >> n_sides;
 	
 	glutInit(&argc, argv);
 	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
 	glutInitWindowSize (w_width, w_height);
 	glutInitWindowPosition (100, 150);
-	glutCreateWindow ("Polygon with radius and # sides");
+	glutCreateWindow ("Polygon with radius and # edges");
 	glutDisplayFunc(myDisplay);
 	myInit ();
 	glutMainLoop();
