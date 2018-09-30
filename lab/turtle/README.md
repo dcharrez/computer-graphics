@@ -10,7 +10,7 @@ Draws a turtle and it can be moved with w,a,s,d; to scale use + and -, to rotate
 ## Running
 
 ```bash
-g++ main.cpp -lglut -lGL -lGLEW -lGLU
+g++ practice_1.cpp -lglut -lGL -lGLEW -lGLU
 ```
 
 ## Screenshots

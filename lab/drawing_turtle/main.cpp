@@ -7,11 +7,55 @@
 
 using namespace std;
 
+int np = 0;
+float px [10000];
+float py [10000];
+float pz [10000];
+
+GLdouble mModel[16];
+
 void display(void);
 void reshape(int width, int height);
 void keyboard(unsigned char key, int x, int y);
 void turtle(int sides,float radio,int x,int y);
 void draw();
+
+void addPointToTrace() {
+	int i;
+	GLdouble m[16];
+	glGetDoublev (GL_MODELVIEW_MATRIX, m);
+	// print the matrix
+	printf ("\nMatrix:\n");
+	for (i = 0; i < 4; i++) {
+	printf ("Row %i: %f \t%f \t%f \t%f \n",
+	i+1, m[i+0],m[i+4],m[i+8],m[i+12]);
+	}
+	// if is the first point
+	if (np == 0) { // add the first point
+	px [0] = 0;
+	py [0] = 0;
+	pz [0] = 0;
+	np++;
+	}
+	px [np] = m[0] * px [0] + m[4] * py [0] + m[8] * pz [0] + m[12];
+	py [np] = m[1] * px [0] + m[5] * py [0] + m[9] * pz [0] + m[13];
+	pz [np] = m[2] * px [0] + m[6] * py [0] + m[10] * pz [0] + m[14];
+	printf ("Point %i: %f \t%f \t%f \n",
+	np, px[np],py[np],pz[np]);
+	np++;
+}
+
+void displayTrace() {
+	int i;
+	glColor3f(0.0,0.0,0.0) ;
+	glBegin(GL_LINE_STRIP);
+	// glBegin(GL_QUAD_STRIP);
+	for (i = 0; i < np; i++) {
+	glVertex3f (px[i],py[i],pz[i]);
+	}
+	glEnd();
+}
+
 
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
@@ -25,6 +69,13 @@ int main(int argc, char** argv) {
 	glutKeyboardFunc(keyboard);
 
 	glutMainLoop();
+
+	// glMatrixMode(GL_MODELVIEW);
+	// glPushMatrix();
+	// glLoadIdentity();
+	// glGetDoublev (GL_MODELVIEW_MATRIX, mModel);
+	// glPopMatrix();
+
 	return 0;
 }
 
@@ -35,34 +86,42 @@ void keyboard(unsigned char key, int x, int y) {
     case 'w' :
         cout<<"up"<<endl;
         glTranslatef(0.0, 0.1 ,0.0);
+        addPointToTrace();
         break;
     case 'a' : 
         cout<<"left"<<endl;
         glTranslatef(-0.1, 0.0 ,0.0);
+        addPointToTrace();
         break;
     case 's' :
         cout<<"down"<<endl;
         glTranslatef(0.0, -0.1, 0);
+        addPointToTrace();
         break;
     case 'd' :
         cout<<"right"<<endl;
         glTranslatef(0.1, 0 ,0.0);
+        addPointToTrace();
         break;
     case 'i' :
         cout<<"up"<<endl;
         glRotatef(5.0, 1.0, 0.0, 0.0);
+        addPointToTrace();
         break;
     case 'j' : 
         cout<<"left"<<endl;
         glRotatef(-5.0, 0.0, 1.0, 0.0);
+        addPointToTrace();
         break;
     case 'k' :
         cout<<"down"<<endl;
         glRotatef(-5.0, 1.0, 0.0, 0.0);
+        addPointToTrace();
         break;
     case 'l' :
         cout<<"right"<<endl;
         glRotatef(5.0, 0.0, 1.0, 0.0);
+        addPointToTrace();
         break;     
     case '+' :
         glScalef(2,2,2);
@@ -89,13 +148,29 @@ void reshape(int width, int height) {
 void display(void) {
 	glClearColor(1.0, 1.0, 1.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glPushMatrix();
+	glMultMatrixd(mModel);
+	
+	glPopMatrix();
 	glColor3f(1.0,0.0,0.0);
 	draw();
 	// glutWireTorus(0.25,0.75, 28, 28);
 	glColor3f(0.0,0.0,1.0) ;
 	glutWireCube(.60) ;
+	displayTrace();
 	glutSwapBuffers();
 }
+
+// void display(void) {
+// 	glClearColor(1.0, 1.0, 1.0, 0.0);
+// 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+// 	glColor3f(1.0,0.0,0.0);
+// 	draw();
+// 	// glutWireTorus(0.25,0.75, 28, 28);
+// 	glColor3f(0.0,0.0,1.0) ;
+// 	glutWireCube(.60) ;
+// 	glutSwapBuffers();
+// }
 
 void turtle(int sides,float radio,int x,int y) {
 
