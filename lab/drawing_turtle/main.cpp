@@ -13,12 +13,23 @@ float py [10000];
 float pz [10000];
 
 GLdouble mModel[16];
+bool command = false; /* command mode */
+char strCommand[256];
+
+char *repeatCommand;
+char *nextCommand;
+char parseCommandInit[256];
+int i;
+
+char * insideRepeat(char* strCommandInside);
 
 void display(void);
 void reshape(int width, int height);
+// void keyboard(unsigned char key, int x, int y);
 void keyboard(unsigned char key, int x, int y);
 void turtle(int sides,float radio,int x,int y);
 void draw();
+void parseCommand(char* strCommandParse);
 
 void addPointToTrace() {
 	int i;
@@ -32,10 +43,10 @@ void addPointToTrace() {
 	}
 	// if is the first point
 	if (np == 0) { // add the first point
-	px [0] = 0;
-	py [0] = 0;
-	pz [0] = 0;
-	np++;
+		px [0] = 0;
+		py [0] = 0;
+		pz [0] = 0;
+		np++;
 	}
 	px [np] = m[0] * px [0] + m[4] * py [0] + m[8] * pz [0] + m[12];
 	py [np] = m[1] * px [0] + m[5] * py [0] + m[9] * pz [0] + m[13];
@@ -56,82 +67,110 @@ void displayTrace() {
 	glEnd();
 }
 
-
-int main(int argc, char** argv) {
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-	glutInitWindowSize(512, 512);
-	glutInitWindowPosition(20, 20);
-	glutCreateWindow("csunsa");
-	glutDisplayFunc(display);
-
-	glutReshapeFunc(reshape);
-	glutKeyboardFunc(keyboard);
-
-	glutMainLoop();
-
-	// glMatrixMode(GL_MODELVIEW);
-	// glPushMatrix();
-	// glLoadIdentity();
-	// glGetDoublev (GL_MODELVIEW_MATRIX, mModel);
-	// glPopMatrix();
-
-	return 0;
+void text(GLuint x, GLuint y, GLfloat scale, char* format, ...) {
+	va_list args;
+	char buffer[255], *p;
+	GLfloat font_scale = 119.05f + 33.33f;
+	// va_start(args, format);
+	// vsprintf(buffer, format, args);
+	// va_end(args);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, glutGet(GLUT_WINDOW_WIDTH), 0,
+	glutGet(GLUT_WINDOW_HEIGHT));
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glPushAttrib(GL_ENABLE_BIT);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glTranslatef(x, y, 0.0);
+	glScalef(scale/font_scale, scale/font_scale, scale/font_scale);
+	for(p = buffer; *p; p++)
+	glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
+	glPopAttrib();
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
 }
 
 void keyboard(unsigned char key, int x, int y) {
-
-   switch(key) {
-    
-    case 'w' :
-        cout<<"up"<<endl;
-        glTranslatef(0.0, 0.1 ,0.0);
-        addPointToTrace();
-        break;
-    case 'a' : 
-        cout<<"left"<<endl;
-        glTranslatef(-0.1, 0.0 ,0.0);
-        addPointToTrace();
-        break;
-    case 's' :
-        cout<<"down"<<endl;
-        glTranslatef(0.0, -0.1, 0);
-        addPointToTrace();
-        break;
-    case 'd' :
-        cout<<"right"<<endl;
-        glTranslatef(0.1, 0 ,0.0);
-        addPointToTrace();
-        break;
-    case 'i' :
-        cout<<"up"<<endl;
-        glRotatef(5.0, 1.0, 0.0, 0.0);
-        addPointToTrace();
-        break;
-    case 'j' : 
-        cout<<"left"<<endl;
-        glRotatef(-5.0, 0.0, 1.0, 0.0);
-        addPointToTrace();
-        break;
-    case 'k' :
-        cout<<"down"<<endl;
-        glRotatef(-5.0, 1.0, 0.0, 0.0);
-        addPointToTrace();
-        break;
-    case 'l' :
-        cout<<"right"<<endl;
-        glRotatef(5.0, 0.0, 1.0, 0.0);
-        addPointToTrace();
-        break;     
-    case '+' :
-        glScalef(2,2,2);
-        break;
-
-    case '-' :
-        glScalef(0.5,0.5,0.5);
-        break;    
-    }
-    glutPostRedisplay();
+	if (command) {
+		if (key == 'q') {
+			strcat(strCommand, " ");
+			if (strlen(strCommand) == 1) command = false;
+			cout << "STR COMMAND: " << strCommand << endl;
+			parseCommand(strCommand);
+			strcpy(strCommand, "");
+			} else {
+				char strKey[2] = " ";
+				strKey[0] = key;
+				printf(strKey);
+				strcat(strCommand, strKey);
+		}
+	} else { // not in command mode
+		switch (key) {
+		case 'i':
+			command = true;
+			break;
+		case 'w' :
+			cout<<"up"<<endl;
+			glTranslatef(0.0, 0.1 ,0.0);
+			addPointToTrace();
+			break;
+		case 'a' : 
+			cout<<"left"<<endl;
+			glTranslatef(-0.1, 0.0 ,0.0);
+			addPointToTrace();
+			break;
+		case 's' :
+			cout<<"down"<<endl;
+			glTranslatef(0.0, -0.1, 0);
+			addPointToTrace();
+			break;
+		case 'd' :
+			cout<<"right"<<endl;
+			glTranslatef(0.1, 0 ,0.0);
+			addPointToTrace();
+			break;
+		case 'u' :
+			cout<<"up"<<endl;
+			glRotatef(.05, 1.0, 0.0, 0.0);
+			addPointToTrace();
+			break;
+		case 'h' : 
+			cout<<"left"<<endl;
+			glRotatef(-.05, 0.0, 1.0, 0.0);
+			addPointToTrace();
+			break;
+		case 'j' :
+			cout<<"down"<<endl;
+			glRotatef(-.05, 1.0, 0.0, 0.0);
+			addPointToTrace();
+			break;
+		case 'k' :
+			cout<<"right"<<endl;
+			glRotatef(.05, 0.0, 1.0, 0.0);
+			addPointToTrace();
+			break;
+		case 'n':
+			glTranslatef(0.0, 0.0, .05);
+			addPointToTrace();
+		case 'm':
+			glTranslatef(0.0, 0.0, -.05);
+			addPointToTrace();
+		case '+' :
+			glScalef(2,2,2);
+			break;
+		case '-' :
+			glScalef(0.5,0.5,0.5);
+			break;    
+		}
+	}
+	glutPostRedisplay();
 }
 
 void reshape(int width, int height) {
@@ -141,7 +180,6 @@ void reshape(int width, int height) {
 	gluPerspective(60.0, (GLfloat)height / (GLfloat)width, 1.0, 128.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
 	gluLookAt(0.0, 1.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
@@ -152,14 +190,79 @@ void display(void) {
 	glMultMatrixd(mModel);
 	
 	glPopMatrix();
+	if (command) {
+		glColor3f(1.0,1.,0.0) ;
+		text(5, 5, 20, "->%s", strCommand);
+	}
 	glColor3f(1.0,0.0,0.0);
 	draw();
 	// glutWireTorus(0.25,0.75, 28, 28);
 	glColor3f(0.0,0.0,1.0) ;
-	glutWireCube(.60) ;
+	// glutWireCube(.60) ;
 	displayTrace();
 	glutSwapBuffers();
 }
+
+char * insideRepeat(char* strCommandInside) {
+	char *ini, *fin;
+	ini = strchr(strCommandInside,'[');
+	if (ini == NULL) return NULL;
+	ini++;
+	fin = strrchr(strCommandInside,']');
+	if (fin == NULL) return NULL;
+	strCommandInside[fin-strCommandInside]=0;
+	return ini;
+}
+
+void parseCommand(char* strCommandParse) {
+	char *strToken0;
+	char *strToken1;
+	double val;
+	strToken0 = strtok(strCommandParse, " ");
+	while ((strToken1 = strtok(NULL," ")) != NULL) {
+		val = atof(strToken1);
+		if (!strcmp("repeat",strToken0)) {
+			repeatCommand = insideRepeat(strToken1 + strlen(strToken1) + 1);
+			if (repeatCommand == NULL) return;
+			nextCommand = repeatCommand + strlen(repeatCommand) + 1;
+			for (i = 0; i < val; i++) {
+				strcpy (parseCommandInit, repeatCommand);
+				parseCommand(parseCommandInit);
+			}
+			strToken0 = strtok(nextCommand, " ");
+			if (strToken0 == NULL) continue;
+			continue;
+		}
+		if (!strcmp("fd",strToken0)) { // FORWARD
+			glTranslatef(0.0, 0.0, val);
+			addPointToTrace();
+		} else if (!strcmp("bk",strToken0)) { // BACK
+			glTranslatef(0.0, 0.0, -val);
+			addPointToTrace();
+		} else if (!strcmp("rt",strToken0)) { // RIGHT
+			glRotatef(-val,0.,1.,0.);
+			addPointToTrace();
+		} else if (!strcmp("lt",strToken0)) { // LEFT
+			glRotatef(val,0.,1.,0.);
+			addPointToTrace();
+		} else if (!strcmp("up",strToken0)) { // UP
+			glRotatef(val,1.,0.,0.);
+			addPointToTrace();
+		} else if (!strcmp("dn",strToken0)) { // DOWN
+			glRotatef(-val,1.,0.,0.);
+			addPointToTrace();
+		}
+		strToken0 = strtok(NULL, " ");
+		display();
+	}
+	// EXIT COMMAND MODE
+	if (strToken0 != NULL && strncmp(strToken0, "exit", 4) == 0) {
+	command = false;
+	} else if (strToken0 != NULL && !strcmp("home",strToken0)) {
+	glLoadIdentity();
+	}
+}
+// HOME
 
 // void display(void) {
 // 	glClearColor(1.0, 1.0, 1.0, 0.0);
@@ -205,3 +308,29 @@ void draw() {
 	turtle(30,0.4,-1,-1);
 	glFlush();
 }
+
+
+int main(int argc, char** argv) {
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+	glutInitWindowSize(512, 512);
+	glutInitWindowPosition(20, 20);
+	glutCreateWindow("csunsa");
+	glutDisplayFunc(display);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glGetDoublev (GL_MODELVIEW_MATRIX, mModel);
+	glPopMatrix();
+
+	glutReshapeFunc(reshape);
+	glutKeyboardFunc(keyboard);
+
+	glutMainLoop();
+
+
+
+	return 0;
+}
+
