@@ -1,4 +1,4 @@
-# Drawing a polygon
+# Drawing and interacting a turtle
 
 Draws a turtle and it can be moved with w,a,s,d; to scale use + and -, to rotate i,j,k,l
 
