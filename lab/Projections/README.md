@@ -1,6 +1,5 @@
 # Orthogonal and Perspective Projection
 
-
 ## Requirements
 
 * OpenGL
@@ -13,17 +12,15 @@ g++ main.cpp camera.cpp vector_tools.cpp -lglut -lGL -lGLEW -lGLU
 ```
 
 ## Screenshots
+<!--
+### Moving around -->
 
-### Moving around
+![alt text](https://github.com/uddua/computer-graphics/blob/master/lab/Projections/imgs/imgs_1.png)
 
-![alt text](https://github.com/uddua/computer-graphics/blob/master/lab/turtle/imgs/translate/translate.gif)
-
-### Rotating
+<!-- ### Rotating
 
 ![alt text](https://github.com/uddua/computer-graphics/blob/master/lab/turtle/imgs/rotation/rotation.gif)
 
 ### Scaling
 
-![alt text](https://github.com/uddua/computer-graphics/blob/master/lab/turtle/imgs/scale/scale.gif)
-
-
+![alt text](https://github.com/uddua/computer-graphics/blob/master/lab/turtle/imgs/scale/scale.gif) -->

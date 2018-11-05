@@ -3,7 +3,7 @@
 #define CAM_PARALLEL 1
 #define CAM_CONIC 2
 #define CAM_STOP 0
-#define CAM_EXAMINAR 1
+#define CAM_CHECK 1
 #define CAM_PASEAR 2
 
 typedef struct _Camera
@@ -51,11 +51,11 @@ void SetGLCamera( camera *thisCamera );
 void SetGLAspectRatioCamera( camera *thisCamera );
 
 // Free camera advances "step" following vector VA, step admits negative values
-void AvanceFreeCamera( camera *thisCamera, float step );
+void freeCamera( camera *thisCamera, float step );
 // ROTATION
 void YawCamera( camera *thisCamera, float angle );
 
-void Rotar_Latitud( camera *thisCamera, float inc );
-void Rotar_Longitud( camera *thisCamera, float inc );
+void rotateLat( camera *thisCamera, float inc );
+void rotateLong( camera *thisCamera, float inc );
 
 #endif /* CAMERA_H */

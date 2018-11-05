@@ -15,16 +15,16 @@ camera *CreatePositionCamera( float positionX, float positionY, float positionZ 
 	newCamera->camViewX = positionX;
 	newCamera->camViewY = positionY;
 	newCamera->camViewZ = positionZ;
-	
+
 	// looks towards
 	newCamera->camAtX = 0.0f;
 	newCamera->camAtY = 0.0f;
 	newCamera->camAtZ = 0.0f;
-	
+
 	newCamera->camUpX = 0.0f;
 	newCamera->camUpY = 1.0f;
 	newCamera->camUpZ = 0.0f;
-	
+
 	newCamera->camAperture = 60.0f * DEGREE_TO_RAD;
 	newCamera->camNear	= 0.5f;
 	newCamera->camFar 	= 200.0f;
@@ -125,7 +125,7 @@ thisCamera->camUpZ = upZ;
 SetDependentParametersCamera( thisCamera );
 }
 
-void AvanceFreeCamera(camera *thisCamera, float step) {
+void freeCamera(camera *thisCamera, float step) {
 	float vaX, vaY, vaZ;
 
 	vaX= step * thisCamera->camKX;
@@ -157,7 +157,7 @@ void YawCamera(camera *thisCamera, float angle){
 	SetDependentParametersCamera( thisCamera );
 }
 
-void Rotar_Longitud(camera *thisCamera,float inc){
+void rotateLong(camera *thisCamera,float inc){
 	float vIn[3];
 	vIn[0]=thisCamera->camViewX-thisCamera->camAtX;
 	vIn[1]=thisCamera->camViewY-thisCamera->camAtY;
@@ -170,7 +170,7 @@ void Rotar_Longitud(camera *thisCamera,float inc){
 	SetDependentParametersCamera( thisCamera );
 }
 
-void Rotar_Latitud(camera *thisCamera,float inc){
+void rotateLat(camera *thisCamera,float inc){
 	float vIn[3];
 	vIn[0]=thisCamera->camViewX-thisCamera->camAtX;
 	vIn[1]=thisCamera->camViewY-thisCamera->camAtY;
@@ -183,4 +183,3 @@ void Rotar_Latitud(camera *thisCamera,float inc){
 
 	SetDependentParametersCamera( thisCamera );
 }
-
